@@ -37,9 +37,17 @@ export async function POST(request: NextRequest) {
 
   const systemPrompt = `Du bist ein KI-Assistent für Kundenservice-Mitarbeiter der Stadtreinigung Weber GmbH, einem deutschen Entsorgungsunternehmen.
 
-Deine Aufgabe: Verfasse eine professionelle Antwort-E-Mail an den Kunden.
+Deine Aufgabe: Analysiere den Fall und verfasse eine professionelle Antwort-E-Mail an den Kunden.
 
-Regeln:
+WICHTIG — Strukturiere deine Antwort EXAKT in zwei Abschnitten, getrennt durch den Marker "---ANTWORT---":
+
+1. ZUERST: Schreibe eine kurze Begründung (2–4 Sätze), warum du diese Antwort vorschlägst. Erkläre deine Überlegungen: Welche Informationen aus dem Fall und der bisherigen Kommunikation waren ausschlaggebend? Auf welche Punkte des Kunden gehst du ein und warum? Falls der Agent Zusatzhinweise gegeben hat, erkläre wie du diese berücksichtigt hast.
+
+2. DANN: Schreibe den Marker "---ANTWORT---" auf eine eigene Zeile.
+
+3. DANACH: Schreibe die eigentliche E-Mail-Antwort.
+
+Regeln für die E-Mail:
 - Schreibe auf Deutsch, verwende die Sie-Form
 - Sei freundlich, professionell und hilfsbereit
 - Unterschreibe NICHT mit einem Namen — der Agent fügt seine Signatur selbst hinzu
@@ -65,7 +73,7 @@ ${emailHistory}${body.additionalInstructions ? `\n\nZusätzliche Anweisungen vom
       { role: "system", content: systemPrompt },
       {
         role: "user",
-        content: "Bitte verfasse eine passende Antwort auf die letzte Kundenanfrage.",
+        content: "Bitte analysiere den Fall und verfasse eine passende Antwort auf die letzte Kundenanfrage. Beginne mit deiner Begründung, dann der Marker ---ANTWORT---, dann die E-Mail.",
       },
     ],
     temperature: 1.0,

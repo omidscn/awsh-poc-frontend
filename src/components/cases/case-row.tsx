@@ -1,9 +1,15 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { formatRelative, getFullName } from "@/lib/utils";
+import { AnimatedRow } from "./animated-row";
 import type { CaseWithRelations } from "@/lib/types/database";
 
 export function CaseRow({ caseData }: { caseData: CaseWithRelations }) {
+  const router = useRouter();
+
   const customerName = getFullName(
     caseData.customers.first_name,
     caseData.customers.last_name
@@ -14,18 +20,20 @@ export function CaseRow({ caseData }: { caseData: CaseWithRelations }) {
     : "—";
 
   const emailCount = caseData.emails?.[0]?.count ?? 0;
+  const href = `/cases/${caseData.id}`;
 
   return (
-    <tr className="hover:bg-gray-50 transition-colors">
+    <AnimatedRow onClick={() => router.push(href)} className="cursor-pointer">
       <td className="px-6 py-4 text-sm">
         <Link
-          href={`/cases/${caseData.id}`}
-          className="font-medium text-gray-900 hover:text-brand-600"
+          href={href}
+          className="font-medium text-surface-100 hover:text-brand-400 transition-colors"
+          onClick={(e) => e.stopPropagation()}
         >
           {caseData.subject}
         </Link>
       </td>
-      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
+      <td className="whitespace-nowrap px-6 py-4 text-sm text-surface-400">
         {customerName}
       </td>
       <td className="whitespace-nowrap px-6 py-4">
@@ -37,15 +45,15 @@ export function CaseRow({ caseData }: { caseData: CaseWithRelations }) {
       <td className="whitespace-nowrap px-6 py-4">
         <Badge variant="priority" value={caseData.priority} />
       </td>
-      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
+      <td className="whitespace-nowrap px-6 py-4 text-sm text-surface-400">
         {agentName}
       </td>
-      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+      <td className="whitespace-nowrap px-6 py-4 text-sm text-surface-500">
         {formatRelative(caseData.updated_at)}
       </td>
-      <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-gray-500">
+      <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-surface-500">
         {emailCount}
       </td>
-    </tr>
+    </AnimatedRow>
   );
 }

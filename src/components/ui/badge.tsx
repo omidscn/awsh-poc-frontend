@@ -32,12 +32,12 @@ export function Badge({
   className?: string;
 }) {
   const label = LABEL_MAP[variant][value] ?? value;
-  const color = COLOR_MAP[variant][value] ?? "bg-gray-100 text-gray-800";
+  const color = COLOR_MAP[variant][value] ?? "bg-zinc-500/15 text-zinc-400";
 
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
+        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium backdrop-blur-sm",
         color,
         className
       )}

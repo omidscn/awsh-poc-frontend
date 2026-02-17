@@ -58,6 +58,11 @@ export type CaseWithRelations = Case & {
   agents: Pick<Agent, "id" | "first_name" | "last_name"> | null;
 };
 
+export type CustomerWithRelations = Customer & {
+  customer_contracts: Pick<CustomerContract, "id" | "service_type" | "active">[];
+  cases: { count: number }[];
+};
+
 export type Email = {
   id: string;
   case_id: string;

@@ -1,4 +1,5 @@
 import { CaseRow } from "./case-row";
+import { AnimatedTableBody } from "./animated-table-body";
 import { EmptyState } from "@/components/ui/empty-state";
 import type { CaseWithRelations } from "@/lib/types/database";
 
@@ -13,41 +14,41 @@ export function CaseTable({ cases }: { cases: CaseWithRelations[] }) {
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+    <div className="overflow-hidden rounded-xl border border-surface-700/50 bg-surface-900">
+      <table className="min-w-full divide-y divide-surface-700/50">
+        <thead className="bg-surface-800/50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-surface-400">
               Betreff
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-surface-400">
               Kunde
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-surface-400">
               Kategorie
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-surface-400">
               Status
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-surface-400">
               Priorität
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-surface-400">
               Agent
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-surface-400">
               Datum
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-surface-400">
               E-Mails
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200">
+        <AnimatedTableBody>
           {cases.map((c) => (
             <CaseRow key={c.id} caseData={c} />
           ))}
-        </tbody>
+        </AnimatedTableBody>
       </table>
     </div>
   );

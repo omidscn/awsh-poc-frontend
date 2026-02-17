@@ -25,27 +25,27 @@ export const PRIORITY_LABELS: Record<string, string> = {
 };
 
 export const STATUS_COLORS: Record<string, string> = {
-  open: "bg-blue-100 text-blue-800",
-  in_progress: "bg-orange-100 text-orange-800",
-  resolved: "bg-green-100 text-green-800",
-  closed: "bg-gray-100 text-gray-800",
+  open: "bg-blue-500/15 text-blue-400 ring-1 ring-blue-500/20",
+  in_progress: "bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/20",
+  resolved: "bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/20",
+  closed: "bg-zinc-500/15 text-zinc-400 ring-1 ring-zinc-500/20",
 };
 
 export const PRIORITY_COLORS: Record<string, string> = {
-  high: "bg-red-100 text-red-800",
-  medium: "bg-yellow-100 text-yellow-800",
-  low: "bg-gray-100 text-gray-600",
+  high: "bg-red-500/15 text-red-400 ring-1 ring-red-500/20",
+  medium: "bg-yellow-500/15 text-yellow-400 ring-1 ring-yellow-500/20",
+  low: "bg-zinc-500/15 text-zinc-400 ring-1 ring-zinc-500/20",
 };
 
 export const CATEGORY_COLORS: Record<string, string> = {
-  tonnenbereitstellung: "bg-emerald-100 text-emerald-800",
-  abholung_verpasst: "bg-rose-100 text-rose-800",
-  sperrmuell: "bg-purple-100 text-purple-800",
-  rechnung: "bg-cyan-100 text-cyan-800",
-  tonnentausch: "bg-amber-100 text-amber-800",
-  adressaenderung: "bg-indigo-100 text-indigo-800",
-  beschwerde: "bg-red-100 text-red-800",
-  allgemein: "bg-gray-100 text-gray-700",
+  tonnenbereitstellung: "bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/20",
+  abholung_verpasst: "bg-rose-500/15 text-rose-400 ring-1 ring-rose-500/20",
+  sperrmuell: "bg-purple-500/15 text-purple-400 ring-1 ring-purple-500/20",
+  rechnung: "bg-cyan-500/15 text-cyan-400 ring-1 ring-cyan-500/20",
+  tonnentausch: "bg-amber-500/15 text-amber-400 ring-1 ring-amber-500/20",
+  adressaenderung: "bg-indigo-500/15 text-indigo-400 ring-1 ring-indigo-500/20",
+  beschwerde: "bg-red-500/15 text-red-400 ring-1 ring-red-500/20",
+  allgemein: "bg-zinc-500/15 text-zinc-400 ring-1 ring-zinc-500/20",
 };
 
 export const SERVICE_TYPE_LABELS: Record<string, string> = {
@@ -74,4 +74,6 @@ export const AI_LABELS = {
   additionalInstructionsPlaceholder: "z.B. 'Abholung wird auf Freitag verschoben'",
   tabCustomer: "Kundeninfo",
   tabAi: "KI-Assistent",
+  sidebarToggle: "KI-Assistent öffnen",
+  sidebarCollapse: "Schließen",
 };

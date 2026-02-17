@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { CustomerInfo } from "@/components/customers/customer-info";
 import { CustomerContracts } from "@/components/customers/customer-contracts";
 import { CustomerCases } from "@/components/customers/customer-cases";
+import { PageTransition } from "@/components/motion/page-transition";
 
 export default async function CustomerPage({
   params,
@@ -32,8 +33,8 @@ export default async function CustomerPage({
     .order("updated_at", { ascending: false });
 
   return (
-    <div>
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Kundenprofil</h1>
+    <PageTransition>
+      <h1 className="mb-6 text-2xl font-bold text-surface-100">Kundenprofil</h1>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-6">
           <CustomerInfo customer={customer} />
@@ -43,6 +44,6 @@ export default async function CustomerPage({
           <CustomerCases cases={cases ?? []} />
         </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }

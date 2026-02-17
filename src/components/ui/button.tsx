@@ -6,10 +6,10 @@ type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 type ButtonSize = "sm" | "md" | "lg";
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: "bg-brand-600 text-white hover:bg-brand-700 focus-visible:ring-brand-600",
-  secondary: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50",
-  danger: "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600",
-  ghost: "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+  primary: "bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-lg shadow-brand-500/20 hover:from-brand-400 hover:to-brand-500 hover:shadow-brand-500/30 focus-visible:ring-brand-500",
+  secondary: "bg-surface-800 text-surface-200 border border-surface-700 hover:bg-surface-700 hover:text-surface-100 focus-visible:ring-surface-500",
+  danger: "bg-red-600 text-white hover:bg-red-500 shadow-lg shadow-red-500/20 focus-visible:ring-red-500",
+  ghost: "text-surface-400 hover:bg-surface-800 hover:text-surface-200",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -30,7 +30,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          "inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+          "inline-flex items-center justify-center gap-2 rounded-md font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-900 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
           variantClasses[variant],
           sizeClasses[size],
           className

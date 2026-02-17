@@ -31,7 +31,7 @@ export function CaseFilters({
   }
 
   return (
-    <div className="mb-6 flex flex-wrap gap-4">
+    <div className="mb-6 flex flex-wrap gap-4 rounded-xl border border-surface-700/50 bg-surface-900 p-4">
       <Select
         placeholder="Alle Status"
         value={currentFilters.status ?? ""}

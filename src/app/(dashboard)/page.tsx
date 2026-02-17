@@ -1,36 +1,130 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { CaseFilters } from "@/components/cases/case-filters";
-import { CaseTable } from "@/components/cases/case-table";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { PageTransition } from "@/components/motion/page-transition";
+import { STATUS_LABELS } from "@/lib/constants";
+import { formatRelative, getFullName } from "@/lib/utils";
 
-export default async function DashboardPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | undefined }>;
-}) {
-  const params = await searchParams;
+const STATUS_ICONS: Record<string, string> = {
+  open: "bg-blue-500/15 text-blue-400",
+  in_progress: "bg-orange-500/15 text-orange-400",
+  resolved: "bg-emerald-500/15 text-emerald-400",
+  closed: "bg-zinc-500/15 text-zinc-400",
+};
+
+export default async function DashboardOverviewPage() {
   const supabase = await createClient();
 
-  let query = supabase
-    .from("cases")
-    .select(
-      "*, customers(id, first_name, last_name, customer_number), agents(id, first_name, last_name), emails(count)"
-    );
+  const [
+    { count: totalCases },
+    { count: totalCustomers },
+    { count: openCount },
+    { count: inProgressCount },
+    { count: resolvedCount },
+    { count: closedCount },
+    { data: recentCases },
+  ] = await Promise.all([
+    supabase.from("cases").select("*", { count: "exact", head: true }),
+    supabase.from("customers").select("*", { count: "exact", head: true }),
+    supabase.from("cases").select("*", { count: "exact", head: true }).eq("status", "open"),
+    supabase.from("cases").select("*", { count: "exact", head: true }).eq("status", "in_progress"),
+    supabase.from("cases").select("*", { count: "exact", head: true }).eq("status", "resolved"),
+    supabase.from("cases").select("*", { count: "exact", head: true }).eq("status", "closed"),
+    supabase
+      .from("cases")
+      .select("id, subject, status, priority, updated_at, customers(first_name, last_name)")
+      .order("updated_at", { ascending: false })
+      .limit(5),
+  ]);
 
-  if (params.status) query = query.eq("status", params.status);
-  if (params.category) query = query.eq("category", params.category);
-  if (params.priority) query = query.eq("priority", params.priority);
-  if (params.agent) query = query.eq("assigned_agent_id", params.agent);
-
-  const { data: cases } = await query.order("updated_at", { ascending: false });
-  const { data: agents } = await supabase
-    .from("agents")
-    .select("id, first_name, last_name");
+  const statusCards = [
+    { status: "open", count: openCount ?? 0 },
+    { status: "in_progress", count: inProgressCount ?? 0 },
+    { status: "resolved", count: resolvedCount ?? 0 },
+    { status: "closed", count: closedCount ?? 0 },
+  ];
 
   return (
-    <div>
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Fallübersicht</h1>
-      <CaseFilters agents={agents ?? []} currentFilters={params} />
-      <CaseTable cases={cases ?? []} />
-    </div>
+    <PageTransition>
+      <h1 className="mb-6 text-2xl font-bold text-surface-100">Übersicht</h1>
+
+      {/* Status stat cards */}
+      <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {statusCards.map(({ status, count }) => (
+          <Link key={status} href={`/cases?status=${status}`}>
+            <Card className="transition-colors hover:border-surface-600/50">
+              <CardContent className="flex items-center justify-between p-4">
+                <div>
+                  <p className="text-sm text-surface-400">{STATUS_LABELS[status]}</p>
+                  <p className="mt-1 text-2xl font-bold text-surface-100">{count}</p>
+                </div>
+                <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${STATUS_ICONS[status]}`}>
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z" />
+                  </svg>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
+
+      {/* Summary cards */}
+      <div className="mb-6 grid grid-cols-2 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-sm text-surface-400">Fälle gesamt</p>
+            <p className="mt-1 text-2xl font-bold text-surface-100">{totalCases ?? 0}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-sm text-surface-400">Kunden gesamt</p>
+            <p className="mt-1 text-2xl font-bold text-surface-100">{totalCustomers ?? 0}</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent cases */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>Letzte Fälle</CardTitle>
+            <Link href="/cases" className="text-sm text-brand-500 hover:text-brand-400 transition-colors">
+              Alle anzeigen
+            </Link>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="divide-y divide-surface-700/50">
+            {recentCases?.map((c) => {
+              const customer = c.customers as unknown as { first_name: string; last_name: string } | null;
+              return (
+                <Link
+                  key={c.id}
+                  href={`/cases/${c.id}`}
+                  className="flex items-center justify-between px-5 py-3 transition-colors hover:bg-surface-800/50"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-surface-100">{c.subject}</p>
+                    <p className="mt-0.5 text-xs text-surface-400">
+                      {customer ? getFullName(customer.first_name, customer.last_name) : "—"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="status" value={c.status} />
+                    <Badge variant="priority" value={c.priority} />
+                    <span className="text-xs text-surface-500 whitespace-nowrap">
+                      {formatRelative(c.updated_at)}
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+    </PageTransition>
   );
 }

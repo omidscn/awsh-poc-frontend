@@ -1,13 +1,127 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-brand-50: #f0fdf4;
-  --color-brand-100: #dcfce7;
-  --color-brand-600: #16a34a;
-  --color-brand-700: #15803d;
+  /* Surface palette — zinc-based dark */
+  --color-surface-950: #09090b;
+  --color-surface-900: #18181b;
+  --color-surface-800: #27272a;
+  --color-surface-700: #3f3f46;
+  --color-surface-600: #52525b;
+  --color-surface-500: #71717a;
+  --color-surface-400: #a1a1aa;
+  --color-surface-300: #d4d4d8;
+  --color-surface-200: #e4e4e7;
+  --color-surface-100: #f4f4f5;
+  --color-surface-50: #fafafa;
+
+  /* Brand palette — emerald/teal */
+  --color-brand-50: #ecfdf5;
+  --color-brand-100: #d1fae5;
+  --color-brand-200: #a7f3d0;
+  --color-brand-300: #6ee7b7;
+  --color-brand-400: #34d399;
+  --color-brand-500: #10b981;
+  --color-brand-600: #059669;
+  --color-brand-700: #047857;
+  --color-brand-800: #065f46;
+  --color-brand-900: #064e3b;
+
+  /* AI palette — purple/violet */
+  --color-ai-50: #f5f3ff;
+  --color-ai-100: #ede9fe;
+  --color-ai-200: #ddd6fe;
+  --color-ai-300: #c4b5fd;
+  --color-ai-400: #a78bfa;
+  --color-ai-500: #8b5cf6;
+  --color-ai-600: #7c3aed;
+  --color-ai-700: #6d28d9;
+  --color-ai-800: #5b21b6;
+  --color-ai-900: #4c1d95;
+
+  /* Glassmorphism tokens */
+  --glass-bg: rgba(24, 24, 27, 0.6);
+  --glass-border: rgba(63, 63, 70, 0.5);
+  --glass-blur: 16px;
+
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Animations */
+  --animate-shimmer: shimmer 2s infinite linear;
+  --animate-glow-pulse: glow-pulse 2s infinite ease-in-out;
+  --animate-gradient-shift: gradient-shift 3s infinite ease;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Custom scrollbar for dark mode */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #18181b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #52525b;
+}
+
+/* Dark select options */
+select option {
+  background-color: #27272a;
+  color: #d4d4d8;
+}
+
+/* Sidebar layout */
+:root {
+  --sidebar-width: 240px;
+}
+
+.sidebar-offset {
+  margin-left: var(--sidebar-width);
+  -webkit-transition: margin-left 300ms ease-in-out;
+  transition: margin-left 300ms ease-in-out;
+}
+
+/* Safari backdrop-filter fallback */
+.glass-blur {
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
 }
 
 body {
-  @apply bg-gray-50 text-gray-900 antialiased;
+  @apply bg-surface-950 text-surface-300 antialiased;
 }

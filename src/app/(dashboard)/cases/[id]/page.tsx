@@ -5,6 +5,7 @@ import { CaseHeader } from "@/components/case-detail/case-header";
 import { CaseActions } from "@/components/case-detail/case-actions";
 import { EmailThread } from "@/components/case-detail/email-thread";
 import { CaseDetailClient } from "@/components/case-detail/case-detail-client";
+import { PageTransition } from "@/components/motion/page-transition";
 import type { Customer, Case as CaseType } from "@/lib/types/database";
 
 export default async function CaseDetailPage({
@@ -47,28 +48,30 @@ export default async function CaseDetailPage({
   };
 
   return (
-    <CaseDetailClient
-      caseId={id}
-      caseSubject={typedCase.subject}
-      caseCategory={typedCase.category}
-      caseStatus={typedCase.status}
-      casePriority={typedCase.priority}
-      customerName={getFullName(
-        typedCase.customers.first_name,
-        typedCase.customers.last_name
-      )}
-      customerEmail={typedCase.customers.email}
-      customer={typedCase.customers}
-      contracts={contracts ?? []}
-      emails={emails ?? []}
-    >
-      <CaseHeader caseData={typedCase} />
-      <CaseActions
-        caseData={typedCase}
-        agents={agents ?? []}
-        currentUserId={user!.id}
-      />
-      <EmailThread emails={emails ?? []} />
-    </CaseDetailClient>
+    <PageTransition>
+      <CaseDetailClient
+        caseId={id}
+        caseSubject={typedCase.subject}
+        caseCategory={typedCase.category}
+        caseStatus={typedCase.status}
+        casePriority={typedCase.priority}
+        customerName={getFullName(
+          typedCase.customers.first_name,
+          typedCase.customers.last_name
+        )}
+        customerEmail={typedCase.customers.email}
+        customer={typedCase.customers}
+        contracts={contracts ?? []}
+        emails={emails ?? []}
+      >
+        <CaseHeader caseData={typedCase} />
+        <CaseActions
+          caseData={typedCase}
+          agents={agents ?? []}
+          currentUserId={user!.id}
+        />
+        <EmailThread emails={emails ?? []} />
+      </CaseDetailClient>
+    </PageTransition>
   );
 }

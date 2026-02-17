@@ -13,15 +13,15 @@ export function CaseHeader({
   return (
     <div>
       <Link
-        href="/"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
+        href="/cases"
+        className="mb-4 inline-flex items-center gap-1 text-sm text-surface-400 hover:text-surface-200 transition-colors"
       >
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
         Zurück zur Übersicht
       </Link>
-      <h1 className="text-2xl font-bold text-gray-900">{caseData.subject}</h1>
+      <h1 className="text-2xl font-bold text-surface-100">{caseData.subject}</h1>
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <Badge variant="status" value={caseData.status} />
         <Badge variant="priority" value={caseData.priority} />

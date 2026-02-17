@@ -1,14 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { AI_LABELS } from "@/lib/constants";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { ReplyComposer } from "./reply-composer";
-import { CustomerSidebar } from "./customer-sidebar";
-import { AiAssistancePane } from "./ai-assistance-pane";
+import { AiSidebar } from "@/components/layout/ai-sidebar";
 import type { Customer, CustomerContract, Email } from "@/lib/types/database";
-
-type ActiveTab = "customer" | "ai";
 
 type CaseDetailClientProps = {
   children: React.ReactNode;
@@ -38,20 +34,26 @@ export function CaseDetailClient({
   emails,
 }: CaseDetailClientProps) {
   const [body, setBody] = useState("");
-  const [activeTab, setActiveTab] = useState<ActiveTab>("customer");
 
-  function handleOpenAiPane() {
-    setActiveTab("ai");
-  }
+  // Lifted AI state — persists across renders
+  const [suggestion, setSuggestion] = useState("");
+  const [reasoning, setReasoning] = useState("");
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [hasGenerated, setHasGenerated] = useState(false);
+  const [additionalInstructions, setAdditionalInstructions] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   function handleUseSuggestion(text: string) {
     setBody(text);
-    setActiveTab("customer");
   }
 
   return (
-    <div className="flex gap-6">
-      <div className="min-w-0 flex-1 space-y-6">
+    <>
+      <div className="mr-96 space-y-6">
         {children}
         <ReplyComposer
           caseId={caseId}
@@ -59,39 +61,12 @@ export function CaseDetailClient({
           customerEmail={customerEmail}
           body={body}
           onBodyChange={setBody}
-          onOpenAiPane={handleOpenAiPane}
         />
       </div>
-      <div className="w-96 shrink-0 space-y-4">
-        <div className="flex rounded-lg bg-gray-100 p-1">
-          <button
-            onClick={() => setActiveTab("customer")}
-            className={cn(
-              "flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
-              activeTab === "customer"
-                ? "bg-white text-gray-900 shadow-sm"
-                : "text-gray-600 hover:text-gray-900"
-            )}
-          >
-            {AI_LABELS.tabCustomer}
-          </button>
-          <button
-            onClick={() => setActiveTab("ai")}
-            className={cn(
-              "flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
-              activeTab === "ai"
-                ? "bg-white text-gray-900 shadow-sm"
-                : "text-gray-600 hover:text-gray-900"
-            )}
-          >
-            {AI_LABELS.tabAi}
-          </button>
-        </div>
-
-        {activeTab === "customer" ? (
-          <CustomerSidebar customer={customer} contracts={contracts} />
-        ) : (
-          <AiAssistancePane
+      {mounted &&
+        createPortal(
+          <AiSidebar
+            customer={customer}
             caseSubject={caseSubject}
             caseCategory={caseCategory}
             caseStatus={caseStatus}
@@ -100,10 +75,20 @@ export function CaseDetailClient({
             customerEmail={customerEmail}
             contracts={contracts}
             emails={emails}
+            suggestion={suggestion}
+            setSuggestion={setSuggestion}
+            reasoning={reasoning}
+            setReasoning={setReasoning}
+            isStreaming={isStreaming}
+            setIsStreaming={setIsStreaming}
+            hasGenerated={hasGenerated}
+            setHasGenerated={setHasGenerated}
+            additionalInstructions={additionalInstructions}
+            setAdditionalInstructions={setAdditionalInstructions}
             onUseSuggestion={handleUseSuggestion}
-          />
+          />,
+          document.body
         )}
-      </div>
-    </div>
+    </>
   );
 }

@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useCallback, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { AI_LABELS, CATEGORY_LABELS } from "@/lib/constants";
+import { AI_LABELS, CATEGORY_LABELS, STATUS_LABELS, PRIORITY_LABELS } from "@/lib/constants";
 import type { Email, CustomerContract } from "@/lib/types/database";
+
+const DELIMITER = "---ANTWORT---";
 
 type AiAssistancePaneProps = {
   caseSubject: string;
@@ -16,6 +18,16 @@ type AiAssistancePaneProps = {
   customerEmail: string;
   contracts: CustomerContract[];
   emails: Email[];
+  suggestion: string;
+  setSuggestion: (value: string) => void;
+  reasoning: string;
+  setReasoning: (value: string) => void;
+  isStreaming: boolean;
+  setIsStreaming: (value: boolean) => void;
+  hasGenerated: boolean;
+  setHasGenerated: (value: boolean) => void;
+  additionalInstructions: string;
+  setAdditionalInstructions: (value: string) => void;
   onUseSuggestion: (text: string) => void;
 };
 
@@ -28,17 +40,26 @@ export function AiAssistancePane({
   customerEmail,
   contracts,
   emails,
+  suggestion,
+  setSuggestion,
+  reasoning,
+  setReasoning,
+  isStreaming,
+  setIsStreaming,
+  hasGenerated,
+  setHasGenerated,
+  additionalInstructions,
+  setAdditionalInstructions,
   onUseSuggestion,
 }: AiAssistancePaneProps) {
-  const [additionalInstructions, setAdditionalInstructions] = useState("");
-  const [suggestion, setSuggestion] = useState("");
-  const [isStreaming, setIsStreaming] = useState(false);
-  const [hasGenerated, setHasGenerated] = useState(false);
+  const delimiterFoundRef = useRef(false);
 
   const handleGenerate = useCallback(async () => {
     setIsStreaming(true);
     setSuggestion("");
+    setReasoning("");
     setHasGenerated(true);
+    delimiterFoundRef.current = false;
 
     const contractsSummary = contracts
       .filter((c) => c.active)
@@ -83,7 +104,28 @@ export function AiAssistancePane({
         const { done, value } = await reader.read();
         if (done) break;
         accumulated += decoder.decode(value, { stream: true });
-        setSuggestion(accumulated);
+
+        if (!delimiterFoundRef.current) {
+          const delimiterIndex = accumulated.indexOf(DELIMITER);
+          if (delimiterIndex !== -1) {
+            delimiterFoundRef.current = true;
+            setReasoning(accumulated.substring(0, delimiterIndex).trim());
+            const afterDelimiter = accumulated.substring(delimiterIndex + DELIMITER.length).trim();
+            setSuggestion(afterDelimiter);
+          } else {
+            setReasoning(accumulated);
+          }
+        } else {
+          const delimiterIndex = accumulated.indexOf(DELIMITER);
+          const afterDelimiter = accumulated.substring(delimiterIndex + DELIMITER.length).trim();
+          setSuggestion(afterDelimiter);
+        }
+      }
+
+      // Fallback if delimiter was never found — treat all as suggestion
+      if (!delimiterFoundRef.current) {
+        setSuggestion(accumulated.trim());
+        setReasoning("");
       }
     } catch {
       setSuggestion("Fehler beim Generieren der Antwort. Bitte versuchen Sie es erneut.");
@@ -100,91 +142,163 @@ export function AiAssistancePane({
     contracts,
     emails,
     additionalInstructions,
+    setSuggestion,
+    setReasoning,
+    setIsStreaming,
+    setHasGenerated,
   ]);
+
+  const isInReasoningPhase = isStreaming && !delimiterFoundRef.current;
+  const isInSuggestionPhase = isStreaming && delimiterFoundRef.current;
 
   return (
     <div className="space-y-4">
-      <Card>
-        <CardContent className="space-y-3 pt-4 text-sm">
-          <h4 className="font-medium text-gray-900">{AI_LABELS.contextHeading}</h4>
-          <div className="space-y-1.5 text-gray-600">
-            <p>
-              <span className="font-medium text-gray-700">Betreff:</span>{" "}
-              {caseSubject}
-            </p>
-            <p>
-              <span className="font-medium text-gray-700">Kategorie:</span>{" "}
-              {CATEGORY_LABELS[caseCategory] ?? caseCategory}
-            </p>
-            <p>
-              <span className="font-medium text-gray-700">Kunde:</span>{" "}
-              {customerName}
-            </p>
-            <p>
-              <span className="font-medium text-gray-700">E-Mails:</span>{" "}
-              {emails.length}
-            </p>
+      {/* Case context summary */}
+      <div className="rounded-lg border border-ai-500/10 bg-ai-500/5 px-3 py-2.5 text-xs">
+        <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-surface-400">
+          <div className="col-span-2">
+            <span className="text-surface-500">Betreff: </span>
+            <span className="text-surface-300">{caseSubject}</span>
           </div>
-        </CardContent>
-      </Card>
+          <div>
+            <span className="text-surface-500">Kategorie: </span>
+            <span className="text-surface-300">{CATEGORY_LABELS[caseCategory] ?? caseCategory}</span>
+          </div>
+          <div>
+            <span className="text-surface-500">Status: </span>
+            <span className="text-surface-300">{STATUS_LABELS[caseStatus] ?? caseStatus}</span>
+          </div>
+          <div>
+            <span className="text-surface-500">Priorität: </span>
+            <span className="text-surface-300">{PRIORITY_LABELS[casePriority] ?? casePriority}</span>
+          </div>
+          <div>
+            <span className="text-surface-500">E-Mails: </span>
+            <span className="text-surface-300">{emails.length}</span>
+          </div>
+        </div>
+      </div>
 
-      <Card>
-        <CardContent className="space-y-3 pt-4">
-          <Textarea
-            label={AI_LABELS.additionalInstructionsLabel}
-            placeholder={AI_LABELS.additionalInstructionsPlaceholder}
-            rows={2}
-            value={additionalInstructions}
-            onChange={(e) => setAdditionalInstructions(e.target.value)}
-            disabled={isStreaming}
-          />
-          <Button
-            onClick={handleGenerate}
-            loading={isStreaming}
-            className="w-full"
-          >
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z"
-              />
+      {/* Generate controls */}
+      <div className="space-y-3">
+        <Textarea
+          label={AI_LABELS.additionalInstructionsLabel}
+          placeholder={AI_LABELS.additionalInstructionsPlaceholder}
+          rows={2}
+          value={additionalInstructions}
+          onChange={(e) => setAdditionalInstructions(e.target.value)}
+          disabled={isStreaming}
+        />
+        <button
+          onClick={handleGenerate}
+          disabled={isStreaming}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-gradient-to-r from-ai-500 to-ai-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-ai-500/20 transition-all duration-150 hover:from-ai-400 hover:to-ai-500 hover:shadow-ai-500/30 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
+        >
+          {isStreaming && (
+            <svg className="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
             </svg>
-            {hasGenerated ? AI_LABELS.regenerateButton : AI_LABELS.generateButton}
-          </Button>
-        </CardContent>
-      </Card>
+          )}
+          <svg
+            className="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z"
+            />
+          </svg>
+          {hasGenerated ? AI_LABELS.regenerateButton : AI_LABELS.generateButton}
+        </button>
+      </div>
 
-      {(suggestion || isStreaming) && (
-        <Card>
-          <CardContent className="space-y-3 pt-4">
-            <h4 className="text-sm font-medium text-gray-900">
-              {AI_LABELS.suggestionHeading}
-            </h4>
-            <div className="rounded-md border border-gray-200 bg-gray-50 p-3 text-sm whitespace-pre-wrap text-gray-800">
-              {suggestion}
-              {isStreaming && (
-                <span className="inline-block h-4 w-0.5 animate-pulse bg-gray-800" />
-              )}
+      {/* Reasoning card */}
+      <AnimatePresence>
+        {(reasoning || isInReasoningPhase) && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="rounded-lg border border-ai-500/10 bg-ai-500/5 p-3">
+              <div className="flex items-center gap-2 mb-2">
+                <svg className="h-3.5 w-3.5 text-ai-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
+                </svg>
+                <h4 className="text-xs font-semibold text-ai-300 uppercase tracking-wide">Begründung</h4>
+              </div>
+              <div className="relative overflow-hidden text-xs text-surface-400 leading-relaxed">
+                {isInReasoningPhase && (
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-ai-500/5 to-transparent bg-[length:200%_100%] animate-shimmer" />
+                )}
+                {reasoning}
+                {isInReasoningPhase && (
+                  <motion.span
+                    animate={{ opacity: [1, 0] }}
+                    transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
+                    className="inline-block h-3.5 w-0.5 bg-ai-400 ml-0.5"
+                  />
+                )}
+              </div>
             </div>
-            {!isStreaming && suggestion && (
-              <Button
-                variant="secondary"
-                onClick={() => onUseSuggestion(suggestion)}
-                className="w-full"
-              >
-                {AI_LABELS.useSuggestionButton}
-              </Button>
-            )}
-          </CardContent>
-        </Card>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Suggestion card */}
+      <AnimatePresence>
+        {(suggestion || isInSuggestionPhase) && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card>
+              <CardContent className="space-y-3 pt-4">
+                <h4 className="text-sm font-medium text-ai-300">
+                  {AI_LABELS.suggestionHeading}
+                </h4>
+                <div className="relative overflow-hidden rounded-md border border-ai-500/10 bg-surface-800/50 p-3 text-sm whitespace-pre-wrap text-surface-200">
+                  {isInSuggestionPhase && (
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-ai-500/5 to-transparent bg-[length:200%_100%] animate-shimmer" />
+                  )}
+                  {suggestion}
+                  {isInSuggestionPhase && (
+                    <motion.span
+                      animate={{ opacity: [1, 0] }}
+                      transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }}
+                      className="inline-block h-4 w-0.5 bg-ai-400 ml-0.5"
+                    />
+                  )}
+                </div>
+                <AnimatePresence>
+                  {!isStreaming && suggestion && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      <button
+                        onClick={() => onUseSuggestion(suggestion)}
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-ai-500/20 bg-surface-800 px-4 py-2 text-sm font-medium text-ai-300 transition-all duration-150 hover:bg-ai-500/10 hover:text-ai-200 active:scale-[0.98]"
+                      >
+                        {AI_LABELS.useSuggestionButton}
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
