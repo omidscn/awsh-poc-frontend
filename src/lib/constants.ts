@@ -1,4 +1,5 @@
 export const COMPANY_NAME = "Stadtreinigung Weber GmbH";
+export const APP_VERSION = "1.0.1";
 
 export const CATEGORY_LABELS: Record<string, string> = {
   tonnenbereitstellung: "Tonnenbereitstellung",
