@@ -155,26 +155,26 @@ export function AiAssistancePane({
     <div className="space-y-4">
       {/* Case context summary */}
       <div className="rounded-lg border border-ai-500/10 bg-ai-500/5 px-3 py-2.5 text-xs">
-        <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-surface-400">
+        <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-subtle">
           <div className="col-span-2">
-            <span className="text-surface-500">Betreff: </span>
-            <span className="text-surface-300">{caseSubject}</span>
+            <span className="text-faint">Betreff: </span>
+            <span className="text-muted">{caseSubject}</span>
           </div>
           <div>
-            <span className="text-surface-500">Kategorie: </span>
-            <span className="text-surface-300">{CATEGORY_LABELS[caseCategory] ?? caseCategory}</span>
+            <span className="text-faint">Kategorie: </span>
+            <span className="text-muted">{CATEGORY_LABELS[caseCategory] ?? caseCategory}</span>
           </div>
           <div>
-            <span className="text-surface-500">Status: </span>
-            <span className="text-surface-300">{STATUS_LABELS[caseStatus] ?? caseStatus}</span>
+            <span className="text-faint">Status: </span>
+            <span className="text-muted">{STATUS_LABELS[caseStatus] ?? caseStatus}</span>
           </div>
           <div>
-            <span className="text-surface-500">Priorität: </span>
-            <span className="text-surface-300">{PRIORITY_LABELS[casePriority] ?? casePriority}</span>
+            <span className="text-faint">Priorität: </span>
+            <span className="text-muted">{PRIORITY_LABELS[casePriority] ?? casePriority}</span>
           </div>
           <div>
-            <span className="text-surface-500">E-Mails: </span>
-            <span className="text-surface-300">{emails.length}</span>
+            <span className="text-faint">E-Mails: </span>
+            <span className="text-muted">{emails.length}</span>
           </div>
         </div>
       </div>
@@ -233,7 +233,7 @@ export function AiAssistancePane({
                 </svg>
                 <h4 className="text-xs font-semibold text-ai-300 uppercase tracking-wide">Begründung</h4>
               </div>
-              <div className="relative overflow-hidden text-xs text-surface-400 leading-relaxed">
+              <div className="relative overflow-hidden text-xs text-subtle leading-relaxed">
                 {isInReasoningPhase && (
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-ai-500/5 to-transparent bg-[length:200%_100%] animate-shimmer" />
                 )}
@@ -265,7 +265,7 @@ export function AiAssistancePane({
                 <h4 className="text-sm font-medium text-ai-300">
                   {AI_LABELS.suggestionHeading}
                 </h4>
-                <div className="relative overflow-hidden rounded-md border border-ai-500/10 bg-surface-800/50 p-3 text-sm whitespace-pre-wrap text-surface-200">
+                <div className="relative overflow-hidden rounded-md border border-ai-500/10 bg-hover p-3 text-sm whitespace-pre-wrap text-primary">
                   {isInSuggestionPhase && (
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-ai-500/5 to-transparent bg-[length:200%_100%] animate-shimmer" />
                   )}
@@ -287,7 +287,7 @@ export function AiAssistancePane({
                     >
                       <button
                         onClick={() => onUseSuggestion(suggestion)}
-                        className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-ai-500/20 bg-surface-800 px-4 py-2 text-sm font-medium text-ai-300 transition-all duration-150 hover:bg-ai-500/10 hover:text-ai-200 active:scale-[0.98]"
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-ai-500/20 bg-secondary px-4 py-2 text-sm font-medium text-ai-300 transition-all duration-150 hover:bg-ai-500/10 hover:text-ai-200 active:scale-[0.98]"
                       >
                         {AI_LABELS.useSuggestionButton}
                       </button>

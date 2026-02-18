@@ -10,7 +10,7 @@ export default function CasesLoading() {
         <Skeleton className="h-10 w-40" />
         <Skeleton className="h-10 w-40" />
       </div>
-      <div className="space-y-1 rounded-xl border border-surface-700/50 bg-surface-900 p-1">
+      <div className="space-y-1 rounded-xl border border-edge bg-card p-1">
         {Array.from({ length: 8 }).map((_, i) => (
           <Skeleton key={i} className="h-14 w-full rounded-lg" />
         ))}

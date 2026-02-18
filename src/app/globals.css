@@ -1,5 +1,53 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ──── Light mode (default) ──── */
+:root {
+  --sem-bg-page: #f8fafc;
+  --sem-bg-card: #ffffff;
+  --sem-bg-secondary: #f1f5f9;
+  --sem-bg-hover: rgba(241, 245, 249, 0.8);
+  --sem-text-heading: #0f172a;
+  --sem-text-primary: #1e293b;
+  --sem-text-muted: #334155;
+  --sem-text-subtle: #64748b;
+  --sem-text-faint: #94a3b8;
+  --sem-border-edge: rgba(203, 213, 225, 0.6);
+  --sem-shadow: rgba(0, 0, 0, 0.06);
+  --sem-ring-offset: #ffffff;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(203, 213, 225, 0.5);
+  --sem-inbound-bg: rgba(241, 245, 249, 0.7);
+  --sem-inbound-border: #94a3b8;
+  --sem-skeleton-from: #e2e8f0;
+  --sem-skeleton-via: #f1f5f9;
+  --sem-skeleton-to: #e2e8f0;
+}
+
+/* ──── Dark mode ──── */
+.dark {
+  --sem-bg-page: #09090b;
+  --sem-bg-card: #18181b;
+  --sem-bg-secondary: #27272a;
+  --sem-bg-hover: rgba(39, 39, 42, 0.5);
+  --sem-text-heading: #f4f4f5;
+  --sem-text-primary: #e4e4e7;
+  --sem-text-muted: #d4d4d8;
+  --sem-text-subtle: #a1a1aa;
+  --sem-text-faint: #71717a;
+  --sem-border-edge: rgba(63, 63, 70, 0.5);
+  --sem-shadow: rgba(0, 0, 0, 0.2);
+  --sem-ring-offset: #18181b;
+  --glass-bg: rgba(24, 24, 27, 0.6);
+  --glass-border: rgba(63, 63, 70, 0.5);
+  --sem-inbound-bg: rgba(39, 39, 42, 0.5);
+  --sem-inbound-border: #71717a;
+  --sem-skeleton-from: #27272a;
+  --sem-skeleton-via: rgba(63, 63, 70, 0.5);
+  --sem-skeleton-to: #27272a;
+}
+
 @theme inline {
   /* Surface palette — zinc-based dark */
   --color-surface-950: #09090b;
@@ -38,9 +86,19 @@
   --color-ai-800: #5b21b6;
   --color-ai-900: #4c1d95;
 
-  /* Glassmorphism tokens */
-  --glass-bg: rgba(24, 24, 27, 0.6);
-  --glass-border: rgba(63, 63, 70, 0.5);
+  /* Semantic colors — resolve to CSS custom properties */
+  --color-page: var(--sem-bg-page);
+  --color-card: var(--sem-bg-card);
+  --color-secondary: var(--sem-bg-secondary);
+  --color-hover: var(--sem-bg-hover);
+  --color-heading: var(--sem-text-heading);
+  --color-primary: var(--sem-text-primary);
+  --color-muted: var(--sem-text-muted);
+  --color-subtle: var(--sem-text-subtle);
+  --color-faint: var(--sem-text-faint);
+  --color-edge: var(--sem-border-edge);
+  --color-ring-offset: var(--sem-ring-offset);
+
   --glass-blur: 16px;
 
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -80,29 +138,29 @@
   }
 }
 
-/* Custom scrollbar for dark mode */
+/* Custom scrollbar — adapts to theme */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #18181b;
+  background: var(--sem-bg-card);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3f3f46;
+  background: var(--sem-border-edge);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #52525b;
+  background: var(--sem-text-faint);
 }
 
-/* Dark select options */
+/* Select options — adapts to theme */
 select option {
-  background-color: #27272a;
-  color: #d4d4d8;
+  background-color: var(--sem-bg-secondary);
+  color: var(--sem-text-muted);
 }
 
 /* Sidebar layout */
@@ -123,5 +181,5 @@ select option {
 }
 
 body {
-  @apply bg-surface-950 text-surface-300 antialiased;
+  @apply bg-page text-muted antialiased;
 }

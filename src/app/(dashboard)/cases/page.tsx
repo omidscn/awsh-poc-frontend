@@ -29,7 +29,7 @@ export default async function CasesPage({
 
   return (
     <PageTransition>
-      <h1 className="mb-6 text-2xl font-bold text-surface-100">Fallübersicht</h1>
+      <h1 className="mb-6 text-2xl font-bold text-heading">Fallübersicht</h1>
       <CaseFilters agents={agents ?? []} currentFilters={params} />
       <CaseTable cases={cases ?? []} />
     </PageTransition>

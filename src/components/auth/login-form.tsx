@@ -55,7 +55,7 @@ export function LoginForm() {
         required
       />
       {error && (
-        <p className="text-sm text-red-400">{error}</p>
+        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
       )}
       <Button type="submit" loading={loading} className="w-full">
         Anmelden

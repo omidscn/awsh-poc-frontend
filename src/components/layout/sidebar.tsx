@@ -63,17 +63,17 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "fixed inset-y-0 left-0 z-50 flex flex-col border-r border-surface-700/50 bg-surface-900 transition-all duration-300 ease-in-out",
+        "fixed inset-y-0 left-0 z-50 flex flex-col border-r border-edge bg-card transition-all duration-300 ease-in-out",
         collapsed ? "w-16" : "w-60"
       )}
     >
       {/* Logo header */}
-      <div className="flex h-14 items-center gap-3 border-b border-surface-700/50 px-4">
+      <div className="flex h-14 items-center gap-3 border-b border-edge px-4">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-600 text-sm font-bold text-white">
           SW
         </div>
         {!collapsed && (
-          <span className="truncate text-sm font-semibold text-surface-100">
+          <span className="truncate text-sm font-semibold text-heading">
             {COMPANY_NAME}
           </span>
         )}
@@ -89,8 +89,8 @@ export function Sidebar() {
             className={cn(
               "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
               isActive(item.href)
-                ? "bg-surface-800 text-surface-100"
-                : "text-surface-400 hover:bg-surface-800/50 hover:text-surface-200"
+                ? "bg-secondary text-heading"
+                : "text-subtle hover:bg-hover hover:text-primary"
             )}
           >
             <span className="shrink-0">{item.icon}</span>
@@ -100,10 +100,10 @@ export function Sidebar() {
       </nav>
 
       {/* Collapse toggle */}
-      <div className="border-t border-surface-700/50 p-3">
+      <div className="border-t border-edge p-3">
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="flex w-full items-center justify-center rounded-lg p-2 text-surface-400 transition-colors hover:bg-surface-800/50 hover:text-surface-200"
+          className="flex w-full items-center justify-center rounded-lg p-2 text-subtle transition-colors hover:bg-hover hover:text-primary"
           title={collapsed ? "Sidebar ausklappen" : "Sidebar einklappen"}
         >
           <svg

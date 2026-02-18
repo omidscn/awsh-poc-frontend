@@ -14,22 +14,22 @@ export function CustomerInfo({ customer }: { customer: Customer }) {
             <CardTitle>
               {getFullName(customer.first_name, customer.last_name)}
             </CardTitle>
-            <p className="text-sm text-surface-400">{customer.customer_number}</p>
+            <p className="text-sm text-subtle">{customer.customer_number}</p>
           </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-3 text-sm">
         <div>
-          <span className="font-medium text-surface-500">E-Mail</span>
-          <p className="text-surface-200">{customer.email}</p>
+          <span className="font-medium text-faint">E-Mail</span>
+          <p className="text-primary">{customer.email}</p>
         </div>
         <div>
-          <span className="font-medium text-surface-500">Telefon</span>
-          <p className="text-surface-200">{customer.phone}</p>
+          <span className="font-medium text-faint">Telefon</span>
+          <p className="text-primary">{customer.phone}</p>
         </div>
         <div>
-          <span className="font-medium text-surface-500">Adresse</span>
-          <p className="text-surface-200">
+          <span className="font-medium text-faint">Adresse</span>
+          <p className="text-primary">
             {customer.street}
             <br />
             {customer.zip_code} {customer.city}

@@ -77,7 +77,7 @@ export function ReplyComposer({
             required
           />
           <div className="flex items-center justify-between">
-            <p className="text-xs text-surface-500">
+            <p className="text-xs text-faint">
               KI-Vorschlag im Seitenpanel rechts verfügbar
             </p>
             <Button type="submit" loading={loading}>

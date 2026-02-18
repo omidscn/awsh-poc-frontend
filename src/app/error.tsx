@@ -11,10 +11,10 @@ export default function GlobalError({
 }) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center text-center">
-      <h2 className="text-2xl font-bold text-surface-100">
+      <h2 className="text-2xl font-bold text-heading">
         Ein Fehler ist aufgetreten
       </h2>
-      <p className="mt-2 text-surface-400">
+      <p className="mt-2 text-subtle">
         {error.message || "Bitte versuchen Sie es erneut."}
       </p>
       <Button variant="secondary" className="mt-6" onClick={reset}>

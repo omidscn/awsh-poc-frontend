@@ -27,13 +27,13 @@ export function CaseRow({ caseData }: { caseData: CaseWithRelations }) {
       <td className="px-6 py-4 text-sm">
         <Link
           href={href}
-          className="font-medium text-surface-100 hover:text-brand-400 transition-colors"
+          className="font-medium text-heading hover:text-brand-400 transition-colors"
           onClick={(e) => e.stopPropagation()}
         >
           {caseData.subject}
         </Link>
       </td>
-      <td className="whitespace-nowrap px-6 py-4 text-sm text-surface-400">
+      <td className="whitespace-nowrap px-6 py-4 text-sm text-subtle">
         {customerName}
       </td>
       <td className="whitespace-nowrap px-6 py-4">
@@ -45,13 +45,13 @@ export function CaseRow({ caseData }: { caseData: CaseWithRelations }) {
       <td className="whitespace-nowrap px-6 py-4">
         <Badge variant="priority" value={caseData.priority} />
       </td>
-      <td className="whitespace-nowrap px-6 py-4 text-sm text-surface-400">
+      <td className="whitespace-nowrap px-6 py-4 text-sm text-subtle">
         {agentName}
       </td>
-      <td className="whitespace-nowrap px-6 py-4 text-sm text-surface-500">
+      <td className="whitespace-nowrap px-6 py-4 text-sm text-faint">
         {formatRelative(caseData.updated_at)}
       </td>
-      <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-surface-500">
+      <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-faint">
         {emailCount}
       </td>
     </AnimatedRow>

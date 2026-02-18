@@ -26,27 +26,27 @@ export const PRIORITY_LABELS: Record<string, string> = {
 };
 
 export const STATUS_COLORS: Record<string, string> = {
-  open: "bg-blue-500/15 text-blue-400 ring-1 ring-blue-500/20",
-  in_progress: "bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/20",
-  resolved: "bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/20",
-  closed: "bg-zinc-500/15 text-zinc-400 ring-1 ring-zinc-500/20",
+  open: "bg-blue-500/10 text-blue-700 ring-1 ring-blue-500/20 dark:bg-blue-500/15 dark:text-blue-400",
+  in_progress: "bg-orange-500/10 text-orange-700 ring-1 ring-orange-500/20 dark:bg-orange-500/15 dark:text-orange-400",
+  resolved: "bg-emerald-500/10 text-emerald-700 ring-1 ring-emerald-500/20 dark:bg-emerald-500/15 dark:text-emerald-400",
+  closed: "bg-zinc-500/10 text-zinc-600 ring-1 ring-zinc-500/20 dark:bg-zinc-500/15 dark:text-zinc-400",
 };
 
 export const PRIORITY_COLORS: Record<string, string> = {
-  high: "bg-red-500/15 text-red-400 ring-1 ring-red-500/20",
-  medium: "bg-yellow-500/15 text-yellow-400 ring-1 ring-yellow-500/20",
-  low: "bg-zinc-500/15 text-zinc-400 ring-1 ring-zinc-500/20",
+  high: "bg-red-500/10 text-red-700 ring-1 ring-red-500/20 dark:bg-red-500/15 dark:text-red-400",
+  medium: "bg-yellow-500/10 text-yellow-700 ring-1 ring-yellow-500/20 dark:bg-yellow-500/15 dark:text-yellow-400",
+  low: "bg-zinc-500/10 text-zinc-600 ring-1 ring-zinc-500/20 dark:bg-zinc-500/15 dark:text-zinc-400",
 };
 
 export const CATEGORY_COLORS: Record<string, string> = {
-  tonnenbereitstellung: "bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/20",
-  abholung_verpasst: "bg-rose-500/15 text-rose-400 ring-1 ring-rose-500/20",
-  sperrmuell: "bg-purple-500/15 text-purple-400 ring-1 ring-purple-500/20",
-  rechnung: "bg-cyan-500/15 text-cyan-400 ring-1 ring-cyan-500/20",
-  tonnentausch: "bg-amber-500/15 text-amber-400 ring-1 ring-amber-500/20",
-  adressaenderung: "bg-indigo-500/15 text-indigo-400 ring-1 ring-indigo-500/20",
-  beschwerde: "bg-red-500/15 text-red-400 ring-1 ring-red-500/20",
-  allgemein: "bg-zinc-500/15 text-zinc-400 ring-1 ring-zinc-500/20",
+  tonnenbereitstellung: "bg-emerald-500/10 text-emerald-700 ring-1 ring-emerald-500/20 dark:bg-emerald-500/15 dark:text-emerald-400",
+  abholung_verpasst: "bg-rose-500/10 text-rose-700 ring-1 ring-rose-500/20 dark:bg-rose-500/15 dark:text-rose-400",
+  sperrmuell: "bg-purple-500/10 text-purple-700 ring-1 ring-purple-500/20 dark:bg-purple-500/15 dark:text-purple-400",
+  rechnung: "bg-cyan-500/10 text-cyan-700 ring-1 ring-cyan-500/20 dark:bg-cyan-500/15 dark:text-cyan-400",
+  tonnentausch: "bg-amber-500/10 text-amber-700 ring-1 ring-amber-500/20 dark:bg-amber-500/15 dark:text-amber-400",
+  adressaenderung: "bg-indigo-500/10 text-indigo-700 ring-1 ring-indigo-500/20 dark:bg-indigo-500/15 dark:text-indigo-400",
+  beschwerde: "bg-red-500/10 text-red-700 ring-1 ring-red-500/20 dark:bg-red-500/15 dark:text-red-400",
+  allgemein: "bg-zinc-500/10 text-zinc-600 ring-1 ring-zinc-500/20 dark:bg-zinc-500/15 dark:text-zinc-400",
 };
 
 export const SERVICE_TYPE_LABELS: Record<string, string> = {

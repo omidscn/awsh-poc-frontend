@@ -32,7 +32,7 @@ export function Badge({
   className?: string;
 }) {
   const label = LABEL_MAP[variant][value] ?? value;
-  const color = COLOR_MAP[variant][value] ?? "bg-zinc-500/15 text-zinc-400";
+  const color = COLOR_MAP[variant][value] ?? "bg-zinc-500/10 text-zinc-600 dark:bg-zinc-500/15 dark:text-zinc-400";
 
   return (
     <span

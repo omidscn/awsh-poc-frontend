@@ -19,8 +19,8 @@ export function CustomerSidebar({
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           <div>
-            <span className="font-medium text-surface-500">Name</span>
-            <p className="text-surface-200">
+            <span className="font-medium text-faint">Name</span>
+            <p className="text-primary">
               <Link
                 href={`/customers/${customer.id}`}
                 className="text-brand-400 hover:text-brand-300 hover:underline transition-colors"
@@ -30,20 +30,20 @@ export function CustomerSidebar({
             </p>
           </div>
           <div>
-            <span className="font-medium text-surface-500">Kundennummer</span>
-            <p className="text-surface-200">{customer.customer_number}</p>
+            <span className="font-medium text-faint">Kundennummer</span>
+            <p className="text-primary">{customer.customer_number}</p>
           </div>
           <div>
-            <span className="font-medium text-surface-500">E-Mail</span>
-            <p className="text-surface-200">{customer.email}</p>
+            <span className="font-medium text-faint">E-Mail</span>
+            <p className="text-primary">{customer.email}</p>
           </div>
           <div>
-            <span className="font-medium text-surface-500">Telefon</span>
-            <p className="text-surface-200">{customer.phone}</p>
+            <span className="font-medium text-faint">Telefon</span>
+            <p className="text-primary">{customer.phone}</p>
           </div>
           <div>
-            <span className="font-medium text-surface-500">Adresse</span>
-            <p className="text-surface-200">
+            <span className="font-medium text-faint">Adresse</span>
+            <p className="text-primary">
               {customer.street}
               <br />
               {customer.zip_code} {customer.city}
@@ -58,33 +58,33 @@ export function CustomerSidebar({
         </CardHeader>
         <CardContent>
           {contracts.length === 0 ? (
-            <p className="text-sm text-surface-500">Keine Verträge vorhanden.</p>
+            <p className="text-sm text-faint">Keine Verträge vorhanden.</p>
           ) : (
             <ul className="space-y-3">
               {contracts.map((contract) => (
                 <li
                   key={contract.id}
-                  className="rounded-md border border-surface-700/50 bg-surface-800/50 p-3 text-sm"
+                  className="rounded-md border border-edge bg-hover p-3 text-sm"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-surface-200">
+                    <span className="font-medium text-primary">
                       {SERVICE_TYPE_LABELS[contract.service_type] ??
                         contract.service_type}
                     </span>
                     <span
                       className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
                         contract.active
-                          ? "bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/20"
-                          : "bg-zinc-500/15 text-zinc-400 ring-1 ring-zinc-500/20"
+                          ? "bg-emerald-500/10 text-emerald-700 ring-1 ring-emerald-500/20 dark:bg-emerald-500/15 dark:text-emerald-400"
+                          : "bg-zinc-500/10 text-zinc-600 ring-1 ring-zinc-500/20 dark:bg-zinc-500/15 dark:text-zinc-400"
                       }`}
                     >
                       {contract.active ? "Aktiv" : "Inaktiv"}
                     </span>
                   </div>
                   {contract.bin_size && (
-                    <p className="mt-1 text-surface-400">{contract.bin_size}</p>
+                    <p className="mt-1 text-subtle">{contract.bin_size}</p>
                   )}
-                  <p className="text-surface-400">
+                  <p className="text-subtle">
                     {PICKUP_FREQUENCY_LABELS[contract.pickup_frequency] ??
                       contract.pickup_frequency}
                   </p>

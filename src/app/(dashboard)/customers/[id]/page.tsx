@@ -34,7 +34,7 @@ export default async function CustomerPage({
 
   return (
     <PageTransition>
-      <h1 className="mb-6 text-2xl font-bold text-surface-100">Kundenprofil</h1>
+      <h1 className="mb-6 text-2xl font-bold text-heading">Kundenprofil</h1>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-6">
           <CustomerInfo customer={customer} />

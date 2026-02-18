@@ -8,7 +8,7 @@ export function LoginCard({ children }: { children: React.ReactNode }) {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="w-full max-w-md rounded-xl border border-surface-700/50 bg-surface-900 p-8 shadow-2xl shadow-black/40"
+      className="w-full max-w-md rounded-xl border border-edge bg-card p-8 shadow-2xl shadow-[var(--sem-shadow)]"
     >
       {children}
     </motion.div>

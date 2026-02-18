@@ -18,7 +18,7 @@ export function AnimatedRow({
         hidden: { opacity: 0, y: 8 },
         visible: { opacity: 1, y: 0 },
       }}
-      className={cn("transition-colors hover:bg-surface-800/50", className)}
+      className={cn("transition-colors hover:bg-hover", className)}
       onClick={onClick}
     >
       {children}

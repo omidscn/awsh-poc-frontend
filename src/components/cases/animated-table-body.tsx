@@ -15,7 +15,7 @@ export function AnimatedTableBody({ children }: { children: React.ReactNode }) {
           },
         },
       }}
-      className="divide-y divide-surface-700/50"
+      className="divide-y divide-edge"
     >
       {children}
     </motion.tbody>

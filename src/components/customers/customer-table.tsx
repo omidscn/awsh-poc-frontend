@@ -17,26 +17,26 @@ export function CustomerTable({ customers }: { customers: CustomerWithRelations[
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-surface-700/50 bg-surface-900">
-      <table className="min-w-full divide-y divide-surface-700/50">
-        <thead className="bg-surface-800/50">
+    <div className="overflow-hidden rounded-xl border border-edge bg-card">
+      <table className="min-w-full divide-y divide-edge">
+        <thead className="bg-hover">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-surface-400">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-subtle">
               Kunde
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-surface-400">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-subtle">
               Kundennummer
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-surface-400">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-subtle">
               E-Mail
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-surface-400">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-subtle">
               Ort
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-surface-400">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-subtle">
               Verträge
             </th>
-            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-surface-400">
+            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-subtle">
               Fälle
             </th>
           </tr>
@@ -56,18 +56,18 @@ export function CustomerTable({ customers }: { customers: CustomerWithRelations[
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-600 text-xs font-medium text-white">
                       {getInitials(customer.first_name, customer.last_name)}
                     </div>
-                    <span className="text-sm font-medium text-surface-100 group-hover:text-brand-400 transition-colors">
+                    <span className="text-sm font-medium text-heading group-hover:text-brand-400 transition-colors">
                       {getFullName(customer.first_name, customer.last_name)}
                     </span>
                   </Link>
                 </td>
-                <td className="whitespace-nowrap px-6 py-4 text-sm text-surface-400">
+                <td className="whitespace-nowrap px-6 py-4 text-sm text-subtle">
                   {customer.customer_number}
                 </td>
-                <td className="whitespace-nowrap px-6 py-4 text-sm text-surface-400">
+                <td className="whitespace-nowrap px-6 py-4 text-sm text-subtle">
                   {customer.email}
                 </td>
-                <td className="whitespace-nowrap px-6 py-4 text-sm text-surface-400">
+                <td className="whitespace-nowrap px-6 py-4 text-sm text-subtle">
                   {customer.zip_code} {customer.city}
                 </td>
                 <td className="px-6 py-4">
@@ -76,17 +76,17 @@ export function CustomerTable({ customers }: { customers: CustomerWithRelations[
                       {activeContracts.map((c) => (
                         <span
                           key={c.id}
-                          className="inline-flex rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-emerald-400 ring-1 ring-emerald-500/20"
+                          className="inline-flex rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-emerald-500/20 dark:bg-emerald-500/15 dark:text-emerald-400"
                         >
                           {SERVICE_TYPE_LABELS[c.service_type] ?? c.service_type}
                         </span>
                       ))}
                     </div>
                   ) : (
-                    <span className="text-xs text-surface-500">Keine aktiven</span>
+                    <span className="text-xs text-faint">Keine aktiven</span>
                   )}
                 </td>
-                <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-surface-500">
+                <td className="whitespace-nowrap px-6 py-4 text-right text-sm text-faint">
                   {caseCount}
                 </td>
               </AnimatedRow>

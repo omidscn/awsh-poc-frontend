@@ -25,7 +25,7 @@ export default async function DashboardLayout({
     .single();
 
   return (
-    <div className="h-dvh bg-surface-950" style={{ height: "100dvh" }}>
+    <div className="h-dvh bg-page" style={{ height: "100dvh" }}>
       <Sidebar />
       <div className="sidebar-offset flex h-full flex-col" style={{ marginLeft: "var(--sidebar-width, 240px)" }}>
         <Topbar agent={agent as Agent} />

@@ -7,10 +7,10 @@ import { STATUS_LABELS } from "@/lib/constants";
 import { formatRelative, getFullName } from "@/lib/utils";
 
 const STATUS_ICONS: Record<string, string> = {
-  open: "bg-blue-500/15 text-blue-400",
-  in_progress: "bg-orange-500/15 text-orange-400",
-  resolved: "bg-emerald-500/15 text-emerald-400",
-  closed: "bg-zinc-500/15 text-zinc-400",
+  open: "bg-blue-500/10 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
+  in_progress: "bg-orange-500/10 text-orange-700 dark:bg-orange-500/15 dark:text-orange-400",
+  resolved: "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",
+  closed: "bg-zinc-500/10 text-zinc-600 dark:bg-zinc-500/15 dark:text-zinc-400",
 };
 
 export default async function DashboardOverviewPage() {
@@ -47,17 +47,17 @@ export default async function DashboardOverviewPage() {
 
   return (
     <PageTransition>
-      <h1 className="mb-6 text-2xl font-bold text-surface-100">Übersicht</h1>
+      <h1 className="mb-6 text-2xl font-bold text-heading">Übersicht</h1>
 
       {/* Status stat cards */}
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
         {statusCards.map(({ status, count }) => (
           <Link key={status} href={`/cases?status=${status}`}>
-            <Card className="transition-colors hover:border-surface-600/50">
+            <Card className="transition-colors hover:border-subtle/50">
               <CardContent className="flex items-center justify-between p-4">
                 <div>
-                  <p className="text-sm text-surface-400">{STATUS_LABELS[status]}</p>
-                  <p className="mt-1 text-2xl font-bold text-surface-100">{count}</p>
+                  <p className="text-sm text-subtle">{STATUS_LABELS[status]}</p>
+                  <p className="mt-1 text-2xl font-bold text-heading">{count}</p>
                 </div>
                 <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${STATUS_ICONS[status]}`}>
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -74,14 +74,14 @@ export default async function DashboardOverviewPage() {
       <div className="mb-6 grid grid-cols-2 gap-4">
         <Card>
           <CardContent className="p-4">
-            <p className="text-sm text-surface-400">Fälle gesamt</p>
-            <p className="mt-1 text-2xl font-bold text-surface-100">{totalCases ?? 0}</p>
+            <p className="text-sm text-subtle">Fälle gesamt</p>
+            <p className="mt-1 text-2xl font-bold text-heading">{totalCases ?? 0}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <p className="text-sm text-surface-400">Kunden gesamt</p>
-            <p className="mt-1 text-2xl font-bold text-surface-100">{totalCustomers ?? 0}</p>
+            <p className="text-sm text-subtle">Kunden gesamt</p>
+            <p className="mt-1 text-2xl font-bold text-heading">{totalCustomers ?? 0}</p>
           </CardContent>
         </Card>
       </div>
@@ -97,25 +97,25 @@ export default async function DashboardOverviewPage() {
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="divide-y divide-surface-700/50">
+          <div className="divide-y divide-edge">
             {recentCases?.map((c) => {
               const customer = c.customers as unknown as { first_name: string; last_name: string } | null;
               return (
                 <Link
                   key={c.id}
                   href={`/cases/${c.id}`}
-                  className="flex items-center justify-between px-5 py-3 transition-colors hover:bg-surface-800/50"
+                  className="flex items-center justify-between px-5 py-3 transition-colors hover:bg-hover"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-surface-100">{c.subject}</p>
-                    <p className="mt-0.5 text-xs text-surface-400">
+                    <p className="truncate text-sm font-medium text-heading">{c.subject}</p>
+                    <p className="mt-0.5 text-xs text-subtle">
                       {customer ? getFullName(customer.first_name, customer.last_name) : "—"}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
                     <Badge variant="status" value={c.status} />
                     <Badge variant="priority" value={c.priority} />
-                    <span className="text-xs text-surface-500 whitespace-nowrap">
+                    <span className="text-xs text-faint whitespace-nowrap">
                       {formatRelative(c.updated_at)}
                     </span>
                   </div>

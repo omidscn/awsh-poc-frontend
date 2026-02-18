@@ -12,7 +12,7 @@ export default async function CustomersPage() {
 
   return (
     <PageTransition>
-      <h1 className="mb-6 text-2xl font-bold text-surface-100">Kunden</h1>
+      <h1 className="mb-6 text-2xl font-bold text-heading">Kunden</h1>
       <CustomerTable customers={customers ?? []} />
     </PageTransition>
   );
