@@ -27,7 +27,7 @@ export function CaseRow({ caseData }: { caseData: CaseWithRelations }) {
       <td className="px-6 py-4 text-sm">
         <Link
           href={href}
-          className="font-medium text-heading hover:text-brand-400 transition-colors"
+          className="font-medium text-heading hover:text-brand-600 transition-colors"
           onClick={(e) => e.stopPropagation()}
         >
           {caseData.subject}

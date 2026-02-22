@@ -6,6 +6,9 @@ import { ReplyComposer } from "./reply-composer";
 import { AiSidebar } from "@/components/layout/ai-sidebar";
 import type { Customer, CustomerContract, Email } from "@/lib/types/database";
 
+const MIN_SIDEBAR_WIDTH = 280;
+const MAX_SIDEBAR_WIDTH = 680;
+
 type CaseDetailClientProps = {
   children: React.ReactNode;
   caseId: string;
@@ -42,9 +45,13 @@ export function CaseDetailClient({
   const [hasGenerated, setHasGenerated] = useState(false);
   const [additionalInstructions, setAdditionalInstructions] = useState("");
   const [mounted, setMounted] = useState(false);
+  const [sidebarWidth, setSidebarWidth] = useState(480);
 
   useEffect(() => {
     setMounted(true);
+    setSidebarWidth(
+      Math.min(MAX_SIDEBAR_WIDTH, Math.max(MIN_SIDEBAR_WIDTH, Math.round(window.innerWidth / 3)))
+    );
   }, []);
 
   function handleUseSuggestion(text: string) {
@@ -53,7 +60,7 @@ export function CaseDetailClient({
 
   return (
     <>
-      <div className="mr-96 space-y-6">
+      <div className="space-y-6" style={{ marginRight: sidebarWidth }}>
         {children}
         <ReplyComposer
           caseId={caseId}
@@ -86,6 +93,8 @@ export function CaseDetailClient({
             additionalInstructions={additionalInstructions}
             setAdditionalInstructions={setAdditionalInstructions}
             onUseSuggestion={handleUseSuggestion}
+            width={sidebarWidth}
+            onWidthChange={setSidebarWidth}
           />,
           document.body
         )}

@@ -23,7 +23,7 @@ export function CustomerSidebar({
             <p className="text-primary">
               <Link
                 href={`/customers/${customer.id}`}
-                className="text-brand-400 hover:text-brand-300 hover:underline transition-colors"
+                className="text-brand-600 hover:text-brand-700 hover:underline transition-colors"
               >
                 {getFullName(customer.first_name, customer.last_name)}
               </Link>
@@ -74,8 +74,8 @@ export function CustomerSidebar({
                     <span
                       className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
                         contract.active
-                          ? "bg-emerald-500/10 text-emerald-700 ring-1 ring-emerald-500/20 dark:bg-emerald-500/15 dark:text-emerald-400"
-                          : "bg-zinc-500/10 text-zinc-600 ring-1 ring-zinc-500/20 dark:bg-zinc-500/15 dark:text-zinc-400"
+                          ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200"
+                          : "bg-slate-100 text-slate-500 ring-1 ring-slate-200"
                       }`}
                     >
                       {contract.active ? "Aktiv" : "Inaktiv"}

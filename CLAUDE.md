@@ -30,8 +30,8 @@ npm run lint     # ESLint
 1. **Server Components by default** — Client Components (`"use client"`) only where needed: forms, filters, action buttons, logout
 2. **URL-based filtering** — Case inbox filters stored as search params (shareable, back-button friendly)
 3. **`router.refresh()` after mutations** — No client-side state management; mutations re-invoke Server Components for fresh data
-4. **Middleware auth guard** — Session refresh on every request, redirects unauthenticated users to `/login`
-5. **Route group `(dashboard)`** — All authenticated pages share topbar-only layout (no sidebar)
+4. **Proxy auth guard** — Session refresh on every request via `src/proxy.ts`, redirects unauthenticated users to `/login`
+5. **Route group `(dashboard)`** — All authenticated pages share a layout with collapsible dark sidebar + topbar
 6. **Direct Supabase queries** — No backend API; RLS policies handle authorization (all authenticated users can read all tables, update cases, insert emails)
 7. **AI reply suggestions** — OpenAI streaming via `/api/ai/suggest` Route Handler; CaseDetailClient lifts reply body state so AI pane and composer can share it
 
@@ -53,13 +53,14 @@ npm run lint     # ESLint
 
 ```
 src/
-  middleware.ts                              # Auth session refresh + redirects
+  proxy.ts                                   # Auth session refresh + redirects (Next.js 16 proxy convention)
   lib/
     supabase/client.ts                       # Browser Supabase client (createBrowserClient)
     supabase/server.ts                       # Server Supabase client (cookie-based)
-    supabase/middleware.ts                    # updateSession helper for middleware
+    supabase/middleware.ts                    # updateSession helper for proxy
     types/database.ts                        # TS types: Agent, Customer, CustomerContract, Case, Email, etc.
     constants.ts                             # German labels, badge color maps, company name, AI_LABELS
+    textbausteine.ts                         # Template text library indexed by case category
     utils.ts                                 # cn(), formatDate/DateTime/Relative(), getInitials(), getFullName()
   components/
     ui/                                      # Reusable UI primitives
@@ -70,40 +71,49 @@ src/
       card.tsx                               # Card/CardHeader/CardTitle/CardContent compound
       spinner.tsx                            # SVG loading spinner
       empty-state.tsx                        # "No results" placeholder
+    motion/
+      page-transition.tsx                    # framer-motion page transition wrapper
     layout/
-      sidebar.tsx                            # (Legacy) Dark sidebar — no longer rendered, nav moved to topbar
+      sidebar.tsx                            # Collapsible dark sidebar with nav links, "use client"
+      ai-sidebar.tsx                         # Fixed right panel: Kundeninfo / KI-Assistent / Textbausteine tabs
       topbar.tsx                             # Company logo, nav links (Fälle, Kunden), agent info, logout, "use client"
     auth/
+      login-card.tsx                         # Branded card wrapper for login page
       login-form.tsx                         # Email/password form, "use client"
     cases/
       case-filters.tsx                       # 4 dropdowns (status/category/priority/agent), updates URL params
       case-table.tsx                         # HTML table with sortable columns
+      animated-table-body.tsx                # framer-motion animated table body
+      animated-row.tsx                       # framer-motion animated row
       case-row.tsx                           # Single table row with badges, links to /cases/[id]
     case-detail/
-      case-detail-client.tsx                 # Client wrapper: owns reply body state + tab state, renders split layout
+      case-detail-client.tsx                 # Client wrapper: owns AI state, renders main content + portals AiSidebar
       case-header.tsx                        # Back link, subject, badges
       case-actions.tsx                       # Assign/status/priority/agent controls, "use client"
       customer-sidebar.tsx                   # Customer info card + contracts list
       email-thread.tsx                       # Chronological email list
       email-message.tsx                      # Single email: inbound (gray) vs outbound (blue)
-      reply-composer.tsx                     # Controlled textarea + send button + "KI-Vorschlag" trigger, "use client"
-      ai-assistance-pane.tsx                 # AI pane: context summary, instructions input, streaming suggestion, "use client"
+      reply-composer.tsx                     # Controlled textarea + send button, "use client"
+      ai-assistance-pane.tsx                 # AI suggestion generation + EvaluateModal trigger, "use client"
+      evaluate-modal.tsx                     # Chat-style AI evaluation modal with case context, "use client"
     customers/
       customer-info.tsx                      # Customer profile card with initials avatar
       customer-contracts.tsx                 # Contracts table (service, size, frequency, status)
       customer-cases.tsx                     # List of cases linked to customer
+      customer-table.tsx                     # Customers list table
   app/
     layout.tsx                               # Root: <html lang="de">, Inter font, metadata
-    globals.css                              # Tailwind v4 @theme with brand colors
+    globals.css                              # Tailwind v4 @theme with brand/ai/surface palette + semantic tokens
     error.tsx                                # Global error boundary (German text)
     login/page.tsx                           # Public login page with branding
     api/
-      ai/suggest/route.ts                    # POST: Supabase auth → build German prompt → stream OpenAI response
+      ai/suggest/route.ts                    # POST: Supabase auth → build German prompt → stream gpt-5-mini response
+      ai/evaluate/route.ts                   # POST: Supabase auth → chat-style evaluation → stream gpt-4o-mini response
     (dashboard)/
-      layout.tsx                             # Auth guard → fetch agent → topbar-only shell (no sidebar)
+      layout.tsx                             # Auth guard → fetch agent → sidebar + topbar shell
       page.tsx                               # Case inbox: filtered Supabase query + CaseFilters + CaseTable
       loading.tsx                            # Dashboard loading spinner
-      cases/[id]/page.tsx                    # Case detail: Server data fetch → CaseDetailClient wrapper with tabbed right panel
+      cases/[id]/page.tsx                    # Case detail: Server data fetch → CaseDetailClient + AiSidebar portal
       cases/[id]/loading.tsx                 # Case detail loading spinner
       cases/[id]/not-found.tsx               # 404 for missing cases (German)
       customers/[id]/page.tsx                # Customer profile: info, contracts, cases
@@ -154,7 +164,7 @@ All passwords: `Agent2025!`
 
 - **Server Components / Route Handlers**: Use `createClient()` from `@/lib/supabase/server` (async, cookie-based)
 - **Client Components**: Use `createClient()` from `@/lib/supabase/client` (browser client)
-- Never use `getSession()` in middleware — always use `getUser()` for security
+- Never use `getSession()` in proxy/server context — always use `getUser()` for security
 
 ### Component Patterns
 
@@ -176,21 +186,24 @@ router.refresh();                       // re-runs Server Component to get fresh
 
 ### AI Reply Suggestion Flow
 
-The case detail page has a tabbed right panel ("Kundeninfo" / "KI-Assistent"):
+The case detail page has a resizable right sidebar (`AiSidebar`) portaled to `document.body`:
 
 ```
 CaseDetailPage (Server Component) — fetches case, emails, contracts, agents
-  └─ CaseDetailClient (Client) — owns body state + activeTab
-       ├─ Left: {children} (CaseHeader, CaseActions, EmailThread) + ReplyComposer
-       └─ Right (w-96): Tab bar → CustomerSidebar OR AiAssistancePane
-            └─ AiAssistancePane → POST /api/ai/suggest → streaming OpenAI → "Vorschlag verwenden"
+  └─ CaseDetailClient (Client) — owns body + AI state, portals AiSidebar
+       ├─ Left (margin-right = sidebar width): {children} + ReplyComposer
+       └─ AiSidebar (portal, fixed right, resizable):
+            ├─ Tab: Kundeninfo — customer address, phone, active/inactive contracts
+            ├─ Tab: KI-Assistent — AiAssistancePane → POST /api/ai/suggest → streaming → "Vorschlag verwenden"
+            │        └─ EvaluateModal button → POST /api/ai/evaluate → chat-style Q&A
+            └─ Tab: Textbausteine — template browser filtered by category, "In Antwortfeld übernehmen"
 ```
 
 - `ReplyComposer` is controlled (`body`/`onBodyChange` props lifted to `CaseDetailClient`)
-- "KI-Vorschlag" button in composer switches to the AI tab
-- "Vorschlag verwenden" in AI pane inserts text into the composer and switches back to customer tab
-- API route authenticates via Supabase cookies, builds a German system prompt with full case context, streams `gpt-5-mini` response
-- AI labels are centralized in `AI_LABELS` in `constants.ts`
+- "Vorschlag verwenden" and template selection both call `onUseSuggestion` which sets the reply body
+- Both AI routes authenticate via Supabase cookies before calling OpenAI
+- Sidebar is resizable (drag handle on left edge, MIN 280px / MAX 680px)
+- AI labels are centralized in `AI_LABELS` in `constants.ts`; templates in `lib/textbausteine.ts`
 
 ### German UI Labels
 
@@ -198,8 +211,10 @@ All user-facing text is in German. Label mappings live in `src/lib/constants.ts`
 
 ### Tailwind v4
 
-- No `tailwind.config.ts` — custom theme values defined via `@theme inline` in `globals.css`
-- Brand color: green (`--color-brand-600: #16a34a`)
+- No `tailwind.config.ts` — custom theme values defined via `@theme` + `@theme inline` in `globals.css`
+- Palette colors (`surface-*`, `brand-*`, `ai-*`) defined in `@theme` (inlined hex values for Safari compat)
+- Semantic tokens (`page`, `card`, `primary`, `edge`, etc.) defined in `@theme inline` (reference CSS vars)
+- Brand color: emerald (`--color-brand-600: #059669`), AI color: blue (`--color-ai-600: #2563eb`)
 - Uses `@tailwindcss/postcss` plugin (see `postcss.config.mjs`)
 
 ## Sensitive Files

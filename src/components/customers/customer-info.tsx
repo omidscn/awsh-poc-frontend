@@ -7,7 +7,7 @@ export function CustomerInfo({ customer }: { customer: Customer }) {
     <Card>
       <CardHeader>
         <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-600 text-lg font-medium text-white shadow-lg shadow-brand-500/20">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-600 text-lg font-semibold text-white">
             {getInitials(customer.first_name, customer.last_name)}
           </div>
           <div>

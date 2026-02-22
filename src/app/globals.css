@@ -1,69 +1,58 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
-
-/* ──── Light mode (default) ──── */
+/* ──── Light Mode ──── */
 :root {
-  --sem-bg-page: #f8fafc;
+  /* Backgrounds */
+  --sem-bg-page: #e5ecf4;
   --sem-bg-card: #ffffff;
   --sem-bg-secondary: #f1f5f9;
-  --sem-bg-hover: rgba(241, 245, 249, 0.8);
+  --sem-bg-hover: #e8edf4;
+
+  /* Text */
   --sem-text-heading: #0f172a;
   --sem-text-primary: #1e293b;
   --sem-text-muted: #334155;
-  --sem-text-subtle: #64748b;
-  --sem-text-faint: #94a3b8;
-  --sem-border-edge: rgba(203, 213, 225, 0.6);
-  --sem-shadow: rgba(0, 0, 0, 0.06);
+  --sem-text-subtle: #475569;
+  --sem-text-faint: #64748b;
+
+  /* Borders & shadows */
+  --sem-border-edge: #c8d3de;
+  --sem-shadow: rgba(15, 23, 42, 0.07);
   --sem-ring-offset: #ffffff;
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(203, 213, 225, 0.5);
-  --sem-inbound-bg: rgba(241, 245, 249, 0.7);
-  --sem-inbound-border: #94a3b8;
-  --sem-skeleton-from: #e2e8f0;
-  --sem-skeleton-via: #f1f5f9;
-  --sem-skeleton-to: #e2e8f0;
+
+  /* Misc */
+  --glass-bg: rgba(255, 255, 255, 0.97);
+  --sem-inbound-bg: #f8fafc;
+  --sem-inbound-border: #e2e8f0;
+  --sem-skeleton-from: #c8d3de;
+  --sem-skeleton-via: #e8edf4;
+  --sem-skeleton-to: #c8d3de;
+
+  --sidebar-width: 240px;
 }
 
-/* ──── Dark mode ──── */
-.dark {
-  --sem-bg-page: #09090b;
-  --sem-bg-card: #18181b;
-  --sem-bg-secondary: #27272a;
-  --sem-bg-hover: rgba(39, 39, 42, 0.5);
-  --sem-text-heading: #f4f4f5;
-  --sem-text-primary: #e4e4e7;
-  --sem-text-muted: #d4d4d8;
-  --sem-text-subtle: #a1a1aa;
-  --sem-text-faint: #71717a;
-  --sem-border-edge: rgba(63, 63, 70, 0.5);
-  --sem-shadow: rgba(0, 0, 0, 0.2);
-  --sem-ring-offset: #18181b;
-  --glass-bg: rgba(24, 24, 27, 0.6);
-  --glass-border: rgba(63, 63, 70, 0.5);
-  --sem-inbound-bg: rgba(39, 39, 42, 0.5);
-  --sem-inbound-border: #71717a;
-  --sem-skeleton-from: #27272a;
-  --sem-skeleton-via: rgba(63, 63, 70, 0.5);
-  --sem-skeleton-to: #27272a;
-}
+/*
+ * ──── Palette colors (direct hex values) ────
+ * Using plain @theme so Tailwind inlines the actual hex value into every
+ * utility class (e.g. background-color: #2563eb).  Safari has known issues
+ * resolving nested CSS custom-property chains produced by @theme inline.
+ */
+@theme {
+  /* Surface — slate */
+  --color-surface-950: #020617;
+  --color-surface-900: #0f172a;
+  --color-surface-800: #1e293b;
+  --color-surface-700: #334155;
+  --color-surface-600: #475569;
+  --color-surface-500: #64748b;
+  --color-surface-400: #94a3b8;
+  --color-surface-300: #cbd5e1;
+  --color-surface-200: #e2e8f0;
+  --color-surface-100: #f1f5f9;
+  --color-surface-50:  #f8fafc;
 
-@theme inline {
-  /* Surface palette — zinc-based dark */
-  --color-surface-950: #09090b;
-  --color-surface-900: #18181b;
-  --color-surface-800: #27272a;
-  --color-surface-700: #3f3f46;
-  --color-surface-600: #52525b;
-  --color-surface-500: #71717a;
-  --color-surface-400: #a1a1aa;
-  --color-surface-300: #d4d4d8;
-  --color-surface-200: #e4e4e7;
-  --color-surface-100: #f4f4f5;
-  --color-surface-50: #fafafa;
-
-  /* Brand palette — emerald/teal */
-  --color-brand-50: #ecfdf5;
+  /* Brand — emerald */
+  --color-brand-50:  #ecfdf5;
   --color-brand-100: #d1fae5;
   --color-brand-200: #a7f3d0;
   --color-brand-300: #6ee7b7;
@@ -74,32 +63,17 @@
   --color-brand-800: #065f46;
   --color-brand-900: #064e3b;
 
-  /* AI palette — purple/violet */
-  --color-ai-50: #f5f3ff;
-  --color-ai-100: #ede9fe;
-  --color-ai-200: #ddd6fe;
-  --color-ai-300: #c4b5fd;
-  --color-ai-400: #a78bfa;
-  --color-ai-500: #8b5cf6;
-  --color-ai-600: #7c3aed;
-  --color-ai-700: #6d28d9;
-  --color-ai-800: #5b21b6;
-  --color-ai-900: #4c1d95;
-
-  /* Semantic colors — resolve to CSS custom properties */
-  --color-page: var(--sem-bg-page);
-  --color-card: var(--sem-bg-card);
-  --color-secondary: var(--sem-bg-secondary);
-  --color-hover: var(--sem-bg-hover);
-  --color-heading: var(--sem-text-heading);
-  --color-primary: var(--sem-text-primary);
-  --color-muted: var(--sem-text-muted);
-  --color-subtle: var(--sem-text-subtle);
-  --color-faint: var(--sem-text-faint);
-  --color-edge: var(--sem-border-edge);
-  --color-ring-offset: var(--sem-ring-offset);
-
-  --glass-blur: 16px;
+  /* AI — blue */
+  --color-ai-50:  #eff6ff;
+  --color-ai-100: #dbeafe;
+  --color-ai-200: #bfdbfe;
+  --color-ai-300: #93c5fd;
+  --color-ai-400: #60a5fa;
+  --color-ai-500: #3b82f6;
+  --color-ai-600: #2563eb;
+  --color-ai-700: #1d4ed8;
+  --color-ai-800: #1e40af;
+  --color-ai-900: #1e3a8a;
 
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 
@@ -109,77 +83,59 @@
   --animate-gradient-shift: gradient-shift 3s infinite ease;
 }
 
+/*
+ * ──── Semantic tokens (reference CSS variables) ────
+ * Must use @theme inline so Tailwind emits var(--color-page) etc. instead of
+ * trying to inline a value that is itself a CSS variable reference.
+ */
+@theme inline {
+  --color-page:       var(--sem-bg-page);
+  --color-card:       var(--sem-bg-card);
+  --color-secondary:  var(--sem-bg-secondary);
+  --color-hover:      var(--sem-bg-hover);
+  --color-heading:    var(--sem-text-heading);
+  --color-primary:    var(--sem-text-primary);
+  --color-muted:      var(--sem-text-muted);
+  --color-subtle:     var(--sem-text-subtle);
+  --color-faint:      var(--sem-text-faint);
+  --color-edge:       var(--sem-border-edge);
+  --color-ring-offset: var(--sem-ring-offset);
+
+  --glass-blur: 16px;
+}
+
 @keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
 }
 
 @keyframes glow-pulse {
-  0%,
-  100% {
-    opacity: 0.4;
-  }
-  50% {
-    opacity: 1;
-  }
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1;   }
 }
 
 @keyframes gradient-shift {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+  0%, 100% { background-position: 0%   50%; }
+  50%      { background-position: 100% 50%; }
 }
 
-/* Custom scrollbar — adapts to theme */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
+/* ──── Scrollbar ──── */
+::-webkit-scrollbar            { width: 6px; height: 6px; }
+::-webkit-scrollbar-track      { background: transparent; }
+::-webkit-scrollbar-thumb      { background: #cbd5e1; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover{ background: #94a3b8; }
 
-::-webkit-scrollbar-track {
-  background: var(--sem-bg-card);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--sem-border-edge);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--sem-text-faint);
-}
-
-/* Select options — adapts to theme */
 select option {
-  background-color: var(--sem-bg-secondary);
-  color: var(--sem-text-muted);
-}
-
-/* Sidebar layout */
-:root {
-  --sidebar-width: 240px;
+  background-color: #ffffff;
+  color: #1e293b;
 }
 
 .sidebar-offset {
   margin-left: var(--sidebar-width);
   -webkit-transition: margin-left 300ms ease-in-out;
-  transition: margin-left 300ms ease-in-out;
-}
-
-/* Safari backdrop-filter fallback */
-.glass-blur {
-  -webkit-backdrop-filter: blur(24px);
-  backdrop-filter: blur(24px);
+          transition: margin-left 300ms ease-in-out;
 }
 
 body {
-  @apply bg-page text-muted antialiased;
+  @apply bg-page text-primary antialiased;
 }

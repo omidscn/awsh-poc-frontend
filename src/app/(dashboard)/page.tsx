@@ -7,10 +7,10 @@ import { STATUS_LABELS } from "@/lib/constants";
 import { formatRelative, getFullName } from "@/lib/utils";
 
 const STATUS_ICONS: Record<string, string> = {
-  open: "bg-blue-500/10 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400",
-  in_progress: "bg-orange-500/10 text-orange-700 dark:bg-orange-500/15 dark:text-orange-400",
-  resolved: "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",
-  closed: "bg-zinc-500/10 text-zinc-600 dark:bg-zinc-500/15 dark:text-zinc-400",
+  open: "bg-blue-50 text-blue-600",
+  in_progress: "bg-amber-50 text-amber-600",
+  resolved: "bg-emerald-50 text-emerald-600",
+  closed: "bg-slate-100 text-slate-500",
 };
 
 export default async function DashboardOverviewPage() {
@@ -91,7 +91,7 @@ export default async function DashboardOverviewPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Letzte Fälle</CardTitle>
-            <Link href="/cases" className="text-sm text-brand-500 hover:text-brand-400 transition-colors">
+            <Link href="/cases" className="text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors">
               Alle anzeigen
             </Link>
           </div>

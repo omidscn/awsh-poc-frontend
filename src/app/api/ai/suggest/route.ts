@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
 import { createClient } from "@/lib/supabase/server";
+import { getTemplatesForCategory, getTemplateById } from "@/lib/textbausteine";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -14,6 +15,7 @@ type SuggestRequestBody = {
   contracts: string;
   emails: { direction: string; from_email: string; body: string; sent_at: string }[];
   additionalInstructions?: string;
+  selectedTemplateIds?: string[];
 };
 
 export async function POST(request: NextRequest) {
@@ -35,13 +37,24 @@ export async function POST(request: NextRequest) {
     )
     .join("\n\n---\n\n");
 
+  const templates =
+    body.selectedTemplateIds && body.selectedTemplateIds.length > 0
+      ? body.selectedTemplateIds.map((id) => getTemplateById(id)).filter(Boolean) as NonNullable<ReturnType<typeof getTemplateById>>[]
+      : getTemplatesForCategory(body.caseCategory);
+  const templatesSection = templates.length > 0
+    ? `\n\nOFFIZIELLE TEXTBAUSTEINE FÜR DIESE KATEGORIE:
+Die folgenden offiziellen Textbausteine werden von Agenten für Fälle dieser Kategorie verwendet. Orientiere dich an der Formulierung, Struktur und den konkreten Angaben (Fristen, Gebühren, Hinweise). Passe den passenden Textbaustein an die spezifische Situation des Kunden an, anstatt von Grund auf neu zu formulieren:
+
+${templates.map((t, i) => `--- Textbaustein ${i + 1}: ${t.title} ---\n${t.content}`).join("\n\n")}`
+    : "";
+
   const systemPrompt = `Du bist ein KI-Assistent für Kundenservice-Mitarbeiter der Stadtreinigung Weber GmbH, einem deutschen Entsorgungsunternehmen.
 
 Deine Aufgabe: Analysiere den Fall und verfasse eine professionelle Antwort-E-Mail an den Kunden.
 
 WICHTIG — Strukturiere deine Antwort EXAKT in zwei Abschnitten, getrennt durch den Marker "---ANTWORT---":
 
-1. ZUERST: Schreibe eine kurze Begründung (2–4 Sätze), warum du diese Antwort vorschlägst. Erkläre deine Überlegungen: Welche Informationen aus dem Fall und der bisherigen Kommunikation waren ausschlaggebend? Auf welche Punkte des Kunden gehst du ein und warum? Falls der Agent Zusatzhinweise gegeben hat, erkläre wie du diese berücksichtigt hast.
+1. ZUERST: Schreibe eine kurze Begründung (2–4 Sätze), warum du diese Antwort vorschlägst. Erkläre deine Überlegungen: Welche Informationen aus dem Fall und der bisherigen Kommunikation waren ausschlaggebend? Auf welche Punkte des Kunden gehst du ein und warum? Nenne, welchen Textbaustein du als Grundlage gewählt hast und was du ggf. angepasst hast. Falls der Agent Zusatzhinweise gegeben hat, erkläre wie du diese berücksichtigt hast.
 
 2. DANN: Schreibe den Marker "---ANTWORT---" auf eine eigene Zeile.
 
@@ -53,7 +66,8 @@ Regeln für die E-Mail:
 - Unterschreibe NICHT mit einem Namen — der Agent fügt seine Signatur selbst hinzu
 - Beginne NICHT mit einer Betreffzeile — schreibe nur den E-Mail-Text
 - Beziehe dich auf den Kontext des Falls und die bisherige Kommunikation
-- Halte die Antwort prägnant aber vollständig
+- Nutze die offiziellen Textbausteine als Grundlage — übernimm die Standardformulierungen, Gebühren, Fristen und Hinweise
+- Halte die Antwort prägnant aber vollständig${templatesSection}
 
 Fallkontext:
 - Betreff: ${body.caseSubject}

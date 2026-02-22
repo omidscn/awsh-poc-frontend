@@ -53,10 +53,10 @@ export function CustomerTable({ customers }: { customers: CustomerWithRelations[
                     href={`/customers/${customer.id}`}
                     className="flex items-center gap-3 group"
                   >
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-600 text-xs font-medium text-white">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-600 text-xs font-semibold text-white">
                       {getInitials(customer.first_name, customer.last_name)}
                     </div>
-                    <span className="text-sm font-medium text-heading group-hover:text-brand-400 transition-colors">
+                    <span className="text-sm font-medium text-heading group-hover:text-brand-600 transition-colors">
                       {getFullName(customer.first_name, customer.last_name)}
                     </span>
                   </Link>
@@ -76,7 +76,7 @@ export function CustomerTable({ customers }: { customers: CustomerWithRelations[
                       {activeContracts.map((c) => (
                         <span
                           key={c.id}
-                          className="inline-flex rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-emerald-500/20 dark:bg-emerald-500/15 dark:text-emerald-400"
+                          className="inline-flex rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 ring-1 ring-emerald-200"
                         >
                           {SERVICE_TYPE_LABELS[c.service_type] ?? c.service_type}
                         </span>
